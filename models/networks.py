@@ -159,7 +159,7 @@ class CoarseGenerator(nn.Module):
         self.conv2 = PConvLayer(ngf, ngf*2, kernel_size=3, stride=2, padding=1, act='LeakyReLU')  # down 输出为64 64 128
         self.conv3 = PConvLayer(ngf, ngf*2, kernel_size=3, stride=1, padding=1, act='LeakyReLU')  # down 输出为64 64 128
 
-        self.conv4 = PConvLayer(ngf*2, ngf*4, kernel_size=4, stride=2, padding=1)  # down 输出为32 32 256
+        self.conv4 = PConvLayer(ngf*2, ngf*4, kernel_size=3, stride=2, padding=1)  # down 输出为32 32 256
         self.conv5 = PConvLayer(ngf * 4, ngf * 4, kernel_size=3, stride=1, padding=1)  # down 输出为32 32 256
         self.conv6 = PConvLayer(ngf * 4, ngf * 4, kernel_size=3, stride=1, padding=1)  # down 输出为32 32 256
         self.conv7 = PConvLayer(ngf * 4, ngf * 4, kernel_size=3, stride=1, padding=1)  # down 输出为32 32 256
