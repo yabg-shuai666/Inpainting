@@ -116,7 +116,7 @@ def print_network(net):
 def conv_down(dim_in, dim_out):
     return nn.Sequential(
         nn.LeakyReLU(0.2, True),
-        nn.Conv2d(dim_in, dim_out, kernel_size=4, stride=2, padding=1, bias=False),
+        nn.Conv2d(dim_in, dim_out, kernel_size=3, stride=1, padding=1, bias=False),
         nn.BatchNorm2d(dim_out)
     )
 
@@ -124,7 +124,7 @@ def conv_down(dim_in, dim_out):
 def conv_up(dim_in, dim_out):
     return nn.Sequential(
         nn.ReLU(True),
-        nn.ConvTranspose2d(dim_in, dim_out,kernel_size=4, stride=2,padding=1, bias=False),
+        nn.ConvTranspose2d(dim_in, dim_out,kernel_size=3, stride=1,padding=1, bias=False),
         nn.BatchNorm2d(dim_out)
     )
 
@@ -155,14 +155,14 @@ class CoarseGenerator(nn.Module):
     def __init__(self, input_dim, ngf, opt):
         super(CoarseGenerator, self).__init__()
 
-        self.conv1 = PConvLayer(3, ngf, kernel_size=4, stride=2, padding=1, act='LeakyReLU')  #  down 输出为128 128 64
-        self.conv2 = PConvLayer(ngf, ngf*2, kernel_size=4, stride=2, padding=1, act='LeakyReLU')  # down 输出为64 64 128
+        self.conv1 = PConvLayer(3, ngf, kernel_size=3, stride=2, padding=1, act='LeakyReLU')  #  down 输出为128 128 64
+        self.conv2 = PConvLayer(ngf, ngf*2, kernel_size=3, stride=2, padding=1, act='LeakyReLU')  # down 输出为64 64 128
         self.conv3 = PConvLayer(ngf, ngf*2, kernel_size=3, stride=1, padding=1, act='LeakyReLU')  # down 输出为64 64 128
 
         self.conv4 = PConvLayer(ngf*2, ngf*4, kernel_size=4, stride=2, padding=1)  # down 输出为32 32 256
-        self.conv5 = PConvLayer(ngf * 4, ngf * 4, kernel_size=4, stride=2, padding=1)  # down 输出为32 32 256
-        self.conv6 = PConvLayer(ngf * 4, ngf * 4, kernel_size=4, stride=2, padding=1)  # down 输出为32 32 256
-        self.conv7 = PConvLayer(ngf * 4, ngf * 4, kernel_size=4, stride=2, padding=1)  # down 输出为32 32 256
+        self.conv5 = PConvLayer(ngf * 4, ngf * 4, kernel_size=3, stride=1, padding=1)  # down 输出为32 32 256
+        self.conv6 = PConvLayer(ngf * 4, ngf * 4, kernel_size=3, stride=1, padding=1)  # down 输出为32 32 256
+        self.conv7 = PConvLayer(ngf * 4, ngf * 4, kernel_size=3, stride=1, padding=1)  # down 输出为32 32 256
 
         self.upsample = nn.Upsample(scale_factor=2, mode='nearest')# up scale_factor=2
 
@@ -171,20 +171,14 @@ class CoarseGenerator(nn.Module):
         self.upconv10_up = conv_up(ngf * 4 * 2, ngf * 4)  # up 输出为32 32 256
         self.upconv11_up = conv_up(ngf * 4 * 2, ngf * 4)  # up 输出为32 32 256
         self.upconv12_up = conv_up(ngf * 4 * 2, ngf * 2)  # up 输出为64 64 128
+        self.upconv13_up = conv_up(ngf * 4 * 2, ngf * 2)  # up 输出为64 64 128
 
         self.upconv8_bottom = PConvLayer(ngf * 4 *2 , ngf * 4, kernel_size=3, stride=1, padding=1)  # down 输出为32 32 256
         self.upconv9_bottom = PConvLayer(ngf * 4 * 2, ngf * 4, kernel_size=3, stride=1, padding=1)  # down 输出为32 32 256
         self.upconv10_bottom = PConvLayer(ngf * 4 * 2, ngf * 4, kernel_size=3, stride=1, padding=1)  # down 输出为32 32 256
         self.upconv11_bottom = PConvLayer(ngf * 4 * 2, ngf * 4, kernel_size=3, stride=1, padding=1)  # down 输出为32 32 256
-        self.upconv12_bottom = PConvLayer(ngf * 4 * 2, ngf * 2, kernel_size=3, stride=1, padding=1)  # down 输出为32 32 128
-
-
-
-        self.upconv13 = conv_up(ngf * 2 * 2, ngf * 2)  # up 输出为64 64 128
-        self.upconv14 = conv_up(ngf * 2 * 2, ngf * 2)  # up 输出为64 64 128
-
-        self.upconv15 = conv_up(ngf * 2 * 2, ngf)  # up 输出为128 128 32
-        self.upconv16 = conv_up(ngf * 2, 3)  # up 输出为256 256 3
+        self.upconv12_bottom = PConvLayer(ngf * 4 * 2, ngf * 2, kernel_size=3, stride=1, padding=1)  # down 输出为64 64 128
+        self.upconv13_bottom = PConvLayer(ngf * 4 * 2, ngf * 2, kernel_size=3, stride=1, padding=1)  # down 输出为64 64 128
 
         if opt.CA_type == "single":
             self.CA_0 = ContextualAttentionModule(patch_size=3, propagate_size=3)
@@ -197,8 +191,14 @@ class CoarseGenerator(nn.Module):
             self.CA_1 = ParallelContextualAttention(512, fuse=False)
             print("parallel CA")
 
-        self.SqueezeExc = SEModule(256 * 2)
-        self.combiner = nn.Conv2d(256 * 2, 256, kernel_size=1)
+        self.SqueezeExc = SEModule(128 * 2)
+        self.combiner = nn.Conv2d(128 * 2, 128, kernel_size=1)
+
+
+        self.upconv14 = conv_up(ngf * 2 * 2, ngf)  # up 输出为128 128 32
+        self.upconv15 = conv_up(ngf * 2, 3)  # up 输出为256 256 3
+
+
 
 
 class Generator(nn.Module):
@@ -217,11 +217,9 @@ class Generator(nn.Module):
         out_1, m1= self.CoarseGenerator_1(torch.cat((x, (1 - mask).expand(x.size(0), 1, x.size(2), x.size(3)).type_as(x)), dim=1),mask,x)
         
         out_2,m2 = self.CoarseGenerator_2(torch.cat((x, out_1), 1), m1,out_1)
-        
      
         out_3,m3= self.CoarseGenerator_3(torch.cat((x, out_2), 1),m2, out_2)
-        
-        
+
         out_4,m4= self.CoarseGenerator_4(torch.cat((x, out_3), 1),m3,out_3)
         
 
@@ -292,7 +290,6 @@ class Discriminator(nn.Module):
         
     def forward(self, input1,input2, input3,input4):
         pred_1=self.discriminator1(input1)
-		
         pred_2=self.discriminator2(input2)
         pred_3=self.discriminator3(input3)
         pred_4=self.discriminator4(input4)

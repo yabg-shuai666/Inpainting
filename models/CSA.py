@@ -12,7 +12,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
-class VGG16FeatureExtractor(nn.Module):
+class VGG19FeatureExtractor(nn.Module):
     def __init__(self):
         super().__init__()
         vgg16 = models.vgg16(pretrained=True)
@@ -43,7 +43,7 @@ class CSA(BaseModel):
         self.opt = opt
         self.isTrain = opt.isTrain
         
-        self.lossNet = VGG16FeatureExtractor().cuda()
+        self.lossNet = VGG19FeatureExtractor().cuda()
         
         self.ones_31 = torch.zeros(opt.batchSize, 1, 30, 30).fill_(1.0).type(torch.FloatTensor).cuda()
         self.zeros_31 = torch.zeros(opt.batchSize, 1, 30, 30).type(torch.FloatTensor).cuda()
@@ -230,7 +230,8 @@ class CSA(BaseModel):
         
         self.loss_G = self.loss_G_L1 + self.loss_G_GAN* self.opt.gan_weight 
         
-        self.loss_G += tv_loss * self.opt.tv_weight + hole_loss * self.opt.hole_weight + preceptual_loss*self.opt.preceptual_weight+style_loss*self.opt.style_weight
+        self.loss_G += preceptual_loss*self.opt.preceptual_weight+style_loss*self.opt.style_weight
+        # self.loss_G += hole_loss * self.opt.hole_weight + preceptual_loss * self.opt.preceptual_weight + style_loss * self.opt.style_weight
                         
                         
         self.loss_G.backward()
