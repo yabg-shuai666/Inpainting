@@ -1,9 +1,9 @@
-# Progressively Inpainting Image Based on a Forked-Then-Fused Decoder Network
+#  Network and Results
 ## Network
 ![Place2](https://github.com/yabg-shuai666/Inpainting/blob/main/Place2.png)
-## Place2
+## Place2 Results
 ![Place2](https://github.com/yabg-shuai666/Inpainting/blob/main/Place2.png)
-## ParisStreetView
+## ParisStreetView Results
 ![ParisStreetView](https://github.com/yabg-shuai666/Inpainting/blob/main/ParisStreetView.png)
-## CelebA
+## CelebA Results
 ![CelebA](https://github.com/yabg-shuai666/Inpainting/blob/main/CelebA.png)
