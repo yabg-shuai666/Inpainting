@@ -27,4 +27,4 @@ We benefit a lot from [Semantic Image Inpainting with Progressive Generative Net
 We benefit a lot from [Generative Image Inpainting with Contextual Attention]:https://github.com/JiahuiYu/generative_inpainting.    
 We benefit a lot from [Coherent Semantic Attention for Image Inpaintin]:https://github.com/KumapowerLIU/CSA-inpainting.    
 We benefit a lot from [Region Normalization for Image Inpainting]:https://github.com/geekyutao/RN.git.    
-Finally, I sincerely my teachers Rong Huang and Fang Han for their great help and encouragement.    
+Finally, I sincerely thank my teachers Rong Huang and Fang Han for their great help and encouragement.    
