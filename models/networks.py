@@ -100,19 +100,11 @@ def print_network(net):
     print(net)
     print('Total number of parameters: %d  M' % (num_params/1e6))
 
-##############################################################################
-# Classes
-##############################################################################
-
-
-
 ################################### ***************************  #####################################
-################################### Shift_net  #####################################
+###################################  Progressiveiy Inpainting Image Based on a Forked-Then-Fused Decoder Network  #####################################
 ################################### ***************************  #####################################
-# Defines the Unet generator.
-# |num_downs|: number of downsamplings in UNet. For example,
-# if |num_downs| == 7, image of size 128x128 will become of size 1x1
-# at the bottleneck
+
+
 def conv_down(dim_in, dim_out):
     return nn.Sequential(
         nn.LeakyReLU(0.2, True),
@@ -270,11 +262,11 @@ class NLayerDiscriminator(nn.Module):
        
 
     def forward(self, input):
-        conv0_out = self.conv0(input)  # 128   64
-        conv1_out = self.conv1(conv0_out)  # 64    128
-        conv2_out = self.conv2(conv1_out)  # 32    256
-        conv3_out = self.conv3(conv2_out)  # 31    512
-        out = self.conv4(conv3_out)  # 30    1
+        conv0_out = self.conv0(input) 
+        conv1_out = self.conv1(conv0_out) 
+        conv2_out = self.conv2(conv1_out) 
+        conv3_out = self.conv3(conv2_out)  
+        out = self.conv4(conv3_out)  
         out = torch.sigmoid(out)
         return out
         

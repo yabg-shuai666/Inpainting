@@ -49,7 +49,7 @@ class RN_B(nn.Module):
             feature_channels: C
         '''
         # RN
-        self.rn = RN_binarylabel(feature_channels)    # need no external parameters
+        self.rn = RN_binarylabel(feature_channels)    
 
         # gamma and beta
         self.foreground_gamma = nn.Parameter(torch.zeros(feature_channels), requires_grad=True)
@@ -72,7 +72,7 @@ class SelfAware_Affine(nn.Module):
     def __init__(self, kernel_size=7):
         super(SelfAware_Affine, self).__init__()
 
-        assert kernel_size in (3, 7), 'kernel size must be 3 or 7'
+        assert kernel_size in (3, 7), 
         padding = 3 if kernel_size == 7 else 1
 
         self.conv1 = nn.Conv2d(2, 1, kernel_size, padding=padding, bias=False)
@@ -109,14 +109,14 @@ class RN_L(nn.Module):
         self.threshold = threshold
 
         # RN
-        self.rn = RN_binarylabel(feature_channels)    # need no external parameters
+        self.rn = RN_binarylabel(feature_channels)    
 
 
     def forward(self, x):
 
-        sa_map, gamma, beta = self.sa(x)     # (B,1,M,N)
+        sa_map, gamma, beta = self.sa(x)    
 
-        # m = sa_map.detach()
+       
         if x.is_cuda:
             mask = torch.zeros_like(sa_map).cuda()
         else:
