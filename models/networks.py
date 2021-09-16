@@ -101,7 +101,8 @@ def print_network(net):
     print('Total number of parameters: %d  M' % (num_params/1e6))
 
 ################################### ***************************  #####################################
-###################################  Progressiveiy Inpainting Image Based on a Forked-Then-Fused Decoder Network  #####################################
+## Encoder Network /
+## Forked-Then-Fused Decoder Network##
 ################################### ***************************  ####################################
 
 
